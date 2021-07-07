@@ -1,14 +1,11 @@
-import { postFilePaths, POSTS_PATH } from "@utils/mdx"
-import fs from "fs"
-import matter from "gray-matter"
-import path from "path"
+import { getPostData, postFilePaths } from "@utils/mdx"
 import Link from "next/link"
 import { FC } from "react"
 import { GetStaticPropsResult } from "next"
 
 type Post = {
-  data: { [key: string]: any }
-  filePath: string
+  frontMatter: { [key: string]: any }
+  url: string
 }
 
 type IndexProps = {
@@ -20,9 +17,9 @@ const Index: FC<IndexProps> = ({ posts }) => (
     <ul>
       {posts.map(post => {
         return (
-          <li key={post.filePath}>
-            <Link as={`/posts/${post.filePath}`} href="/posts/[slug]">
-              <a>{post.data.title}</a>
+          <li key={post.url}>
+            <Link as={`/posts/${post.url}`} href="/posts/[slug]">
+              <a>{post.frontMatter.title}</a>
             </Link>
           </li>
         )
@@ -31,16 +28,19 @@ const Index: FC<IndexProps> = ({ posts }) => (
   </div>
 )
 
-export const getStaticProps = (): GetStaticPropsResult<IndexProps> => {
-  const posts = postFilePaths.map(filePath => {
-    const source = fs.readFileSync(path.join(POSTS_PATH, filePath))
-    const { data } = matter(source)
+export const getStaticProps = async (): Promise<
+  GetStaticPropsResult<IndexProps>
+> => {
+  const postsAsync = postFilePaths.map(filePath =>
+    getPostData(filePath).then(({ frontMatter }) => {
+      return {
+        url: filePath,
+        frontMatter,
+      }
+    }),
+  )
 
-    return {
-      data,
-      filePath: filePath.replace(/\.mdx?$/, ""),
-    }
-  })
+  const posts = await Promise.all(postsAsync)
 
   return {
     props: {

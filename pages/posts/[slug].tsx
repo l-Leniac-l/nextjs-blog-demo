@@ -1,8 +1,4 @@
-import fs from "fs"
-import path from "path"
-import { POSTS_PATH, postFilePaths } from "@utils/mdx"
-import matter from "gray-matter"
-import { serialize } from "next-mdx-remote/serialize"
+import { getPostData, postFilePaths } from "@utils/mdx"
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote"
 import Head from "next/head"
 import { FC } from "react"
@@ -27,34 +23,20 @@ const Post: FC<PostProps> = ({ source, frontMatter }) => {
 export const getStaticProps: GetStaticProps = async ({
   params,
 }): Promise<GetStaticPropsResult<PostProps>> => {
-  const postFilePath = path.join(POSTS_PATH, `${params?.slug}.mdx`)
-
-  const source = fs.readFileSync(postFilePath)
-
-  const { content, data } = matter(source)
-
-  const mdxSource = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [],
-      rehypePlugins: [],
-    },
-    scope: data,
-  })
+  const { source, frontMatter } = await getPostData(params?.slug as string)
 
   return {
     props: {
-      source: mdxSource,
-      frontMatter: data,
+      source,
+      frontMatter,
     },
   }
 }
 
 export const getStaticPaths = () => {
-  const pathsWithoutExtension = postFilePaths.map(path =>
-    path.replace(/\.mdx?$/, ""),
-  )
-
-  const paths = pathsWithoutExtension.map(path => `/posts/${path}`)
+  const paths = postFilePaths.map(path => {
+    return `/posts/${path}`
+  })
 
   return {
     paths,
