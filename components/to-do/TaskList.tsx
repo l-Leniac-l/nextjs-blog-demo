@@ -8,16 +8,18 @@ const TaskList = () => {
   return (
     <div>
       <h1>Lista</h1>
-      <ul>
-        {list.map(task => (
-          <Task
-            {...task}
-            key={task.id}
-            onToggle={toggleTask}
-            onRemove={removeTask}
-          />
-        ))}
-      </ul>
+      {!!list.length && (
+        <ul data-cy="TaskList">
+          {list.map(task => (
+            <Task
+              {...task}
+              key={task.id}
+              onToggle={toggleTask}
+              onRemove={removeTask}
+            />
+          ))}
+        </ul>
+      )}
       <TaskForm createTask={createTask} />
     </div>
   )

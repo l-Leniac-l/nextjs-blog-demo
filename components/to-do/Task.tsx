@@ -18,7 +18,6 @@ const Task: FC<TaskProps> = ({ id, name, done, onToggle, onRemove }) => {
           onClick={() => onToggle && onToggle(id)}
         />
         {name}
-        <button onClick={() => onRemove && onRemove(id)}>Delete</button>
         <style jsx>
           {`
             .checked {
@@ -27,6 +26,12 @@ const Task: FC<TaskProps> = ({ id, name, done, onToggle, onRemove }) => {
           `}
         </style>
       </label>
+      <button
+        onClick={() => onRemove && onRemove(id)}
+        data-cy="TaskDeleteButton"
+      >
+        Delete
+      </button>
     </li>
   )
 }

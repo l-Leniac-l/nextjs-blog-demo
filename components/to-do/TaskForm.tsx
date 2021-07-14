@@ -22,8 +22,9 @@ const TaskForm: FC<TaskFormProps> = ({ createTask }) => {
         onChange={event => {
           setName(event.target.value)
         }}
+        data-cy="TaskFormInput"
       />
-      <input type="submit" value="criar" />
+      <input type="submit" value="criar" data-cy="TaskFormButton" />
     </form>
   )
 }
