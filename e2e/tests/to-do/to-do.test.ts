@@ -5,12 +5,9 @@ import { todoSelectors } from "./selectors"
 const selectors = todoSelectors()
 
 describe("TO-DO: to-do component", () => {
-  beforeEach(() => {
-    // Visite a página to-do
-    cy.visit("/to-do")
-  })
-
   it("Create task", () => {
+    todo.visit()
+
     // A lista tem que estar vazia
     cy.get(selectors.taskList).should("not.exist")
 
@@ -23,6 +20,7 @@ describe("TO-DO: to-do component", () => {
   })
 
   it("Check and uncheck tasks", () => {
+    todo.visit()
     todo.createDefaultList()
 
     // Clica no primeiro elemento da lista
@@ -45,6 +43,7 @@ describe("TO-DO: to-do component", () => {
   })
 
   it("Delete tasks", () => {
+    todo.visit()
     todo.createDefaultList()
 
     // A tarefa deve existir

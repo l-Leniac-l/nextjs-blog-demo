@@ -4,6 +4,10 @@ import { taskList } from "./taksList"
 const selectors = todoSelectors()
 
 export const todo = {
+  visit: () => {
+    cy.visit("/to-do")
+    cy.get("#__next").should("exist")
+  },
   createDefaultList: () => {
     cy.get(selectors.createTaskInput).type(taskList.task1)
     cy.get(selectors.createTaskButton).click()
